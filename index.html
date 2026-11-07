@@ -2207,21 +2207,7 @@ document.querySelectorAll('.cf').forEach(function(wrap){
   }
 
   // Mockup inclina seguindo o dedo/mouse
-  var scene = document.getElementById('mockScene'), stack = document.getElementById('mockStack');
-  if(scene && stack && !reduce){
-    scene.addEventListener('pointermove', function(e){
-      var r = scene.getBoundingClientRect();
-      var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-      stack.style.setProperty('--ry', (x * 34) + 'deg');
-      stack.style.setProperty('--rx', (-y * 22) + 'deg');
-    });
-    scene.addEventListener('pointerleave', function(){ stack.style.setProperty('--ry','0deg'); stack.style.setProperty('--rx','0deg'); });
-    // no celular, balança levemente conforme a rolagem
-    window.addEventListener('scroll', function(){
-      var y = Math.min(window.scrollY, 600) / 600;
-      stack.style.setProperty('--rx', (y * 30) + 'deg');
-    }, {passive:true});
-  }
+  // Mockup do topo: estatico. Sem inclinacao por toque, mouse ou rolagem.
 
   // Toque na xícara: serve o leite de novo
   var cup = document.getElementById('heroCup');
@@ -2448,5 +2434,13 @@ document.querySelectorAll('.cf').forEach(function(wrap){
   .cf-track.depo{height:360px}
   .cf-track.depo .cf-slide{width:180px}
 }
+</style>
+
+<style>
+/* Mockup do topo totalmente parado: só a entrada, nada em loop. */
+.mock-product{animation:productIn 1.2s .2s cubic-bezier(.2,.8,.2,1) forwards !important}
+.mock-glow{animation:none !important;opacity:.85;transform:none}
+.mock-shine{animation:none !important;display:none}
+.mock-stack{transition:none !important;transform:rotateX(10deg) !important}
 </style>
 </body></html>
