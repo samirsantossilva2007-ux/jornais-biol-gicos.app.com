@@ -1,4 +1,30 @@
 <!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"/>
+<script id="jb-domain-lock">
+/* ===================================================================
+   TRAVA DE DOMINIO - contra copia da pagina
+   A pagina so funciona nos enderecos listados abaixo. Se alguem subir
+   este arquivo em outro dominio, o visitante e mandado para o SEU site.
+   A copia vira trafego pra voce em vez de concorrencia.
+
+   >>> ADICIONE SEU DOMINIO PROPRIO NA LISTA QUANDO ELE ESTIVER NO AR <<<
+   =================================================================== */
+(function(){
+  "use strict";
+  var PERMITIDOS = [
+    "jornaisbiologicosapp.vercel.app",
+    "samirsantossilva2007-ux.github.io",
+    "jornaisbiologicos.app.com",          // seu dominio proprio
+    "localhost", "127.0.0.1"
+  ];
+  var CANONICA = "https://jornaisbiologicosapp.vercel.app/";
+  var h = (location.hostname || "").toLowerCase();
+  if (!h) return;                                   // arquivo local: libera
+  var ok = PERMITIDOS.some(function(d){ return h === d || h.slice(-(d.length+1)) === "." + d; });
+  if (ok) return;
+  document.documentElement.style.visibility = "hidden";
+  location.replace(CANONICA);
+})();
+</script>
 <script id="jb-qrlib">
 var qrcode = function() {
   /**
@@ -1633,7 +1659,7 @@ var qrcode = function() {
     var touchSmall=(navigator.maxTouchPoints||0)>1&&Math.min(screen.width,screen.height)<=820;
     return mobileUa||iPadOS||touchSmall;
   }
-  if(isPhoneOrTablet()) return;           // celular e tablet: pagina de vendas normal
+  if(isPhoneOrTablet()) return;
 
   var root=document.documentElement;
   root.className+=" jb-desktop";
@@ -1643,68 +1669,31 @@ var qrcode = function() {
 
   function build(){
     var url=location.href.split("#")[0];
-    var g=document.createElement("div");
-    g.id="jb-gate";
-    g.innerHTML=
-      '<div class="jb-card">'
-      + '<div class="jb-brand"><span class="jb-leaf">&#127807;</span>JORNAIS BIOL&Oacute;GICOS</div>'
-      + '<div class="jb-rule"></div>'
-      + '<h1>Esta p&aacute;gina abre no celular</h1>'
-      + '<p class="jb-sub">Ela foi montada para a tela do celular, que &eacute; onde os jornais s&atilde;o folheados e o material &eacute; baixado. Aponte a c&acirc;mera do seu celular para o c&oacute;digo abaixo e continue por l&aacute;.</p>'
+    var g=document.createElement("div"); g.id="jb-gate";
+    g.innerHTML='<div class="jb-card">'
+      + '<div class="jb-brand"><span>&#127807;</span>JORNAIS BIOL&Oacute;GICOS</div>'
       + '<div class="jb-qr" id="jb-qr"></div>'
-      + '<p class="jb-or">ou copie o endere&ccedil;o</p>'
-      + '<div class="jb-link"><input id="jb-url" readonly value="'+url.replace(/"/g,"&quot;")+'"><button id="jb-copy" type="button">Copiar</button></div>'
-      + '<p class="jb-foot">O conte&uacute;do &eacute; o mesmo: +250 Jornais Biol&oacute;gicos prontos para imprimir e aplicar em sala.</p>'
+      + '<p class="jb-one">Abra no celular</p>'
       + '</div>';
     document.body.appendChild(g);
-
-    try{
-      var qr=qrcode(0,"M"); qr.addData(url); qr.make();
-      document.getElementById("jb-qr").innerHTML=qr.createSvgTag({cellSize:6,margin:2,scalable:true});
-    }catch(e){
-      document.getElementById("jb-qr").style.display="none";
-    }
-
-    var btn=document.getElementById("jb-copy");
-    btn.addEventListener("click",function(){
-      var f=document.getElementById("jb-url");
-      f.select(); f.setSelectionRange(0,99999);
-      var ok=false;
-      try{ ok=document.execCommand("copy"); }catch(e){}
-      if(navigator.clipboard&&navigator.clipboard.writeText){
-        navigator.clipboard.writeText(f.value).then(function(){done();},function(){ if(ok) done(); });
-      } else if(ok){ done(); }
-      function done(){ btn.textContent="Copiado"; setTimeout(function(){btn.textContent="Copiar";},1800); }
-    });
+    try{ var q=qrcode(0,"M"); q.addData(url); q.make();
+         document.getElementById("jb-qr").innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true}); }
+    catch(e){ document.getElementById("jb-qr").style.display="none"; }
   }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",build);
-  else build();
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",build); else build();
 })();
 </script>
 <style id="jb-gate-css">
-#jb-gate{display:none;position:fixed;inset:0;z-index:2147483647;align-items:center;justify-content:center;padding:32px 20px;
-  background:radial-gradient(ellipse at 50% 0%,#1B5540 0%,#14402C 42%,#07190F 100%);
-  font-family:'Figtree',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:auto}
-#jb-gate .jb-card{width:100%;max-width:560px;text-align:center;color:#FFF8EC}
-#jb-gate .jb-brand{font-family:'Fraunces',Georgia,serif;font-weight:900;letter-spacing:.14em;font-size:15px;color:#D7A64A;
-  display:flex;align-items:center;justify-content:center;gap:10px}
-#jb-gate .jb-leaf{font-size:17px}
-#jb-gate .jb-rule{height:2px;margin:14px auto 26px;max-width:280px;
-  background:linear-gradient(90deg,transparent,rgba(215,166,74,.85),transparent)}
-#jb-gate h1{font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:clamp(26px,3.6vw,38px);line-height:1.15;margin:0 0 14px}
-#jb-gate .jb-sub{font-size:16px;line-height:1.65;color:#CBDCD1;margin:0 auto 28px;max-width:460px}
-#jb-gate .jb-qr{background:#FFF8EC;border-radius:16px;padding:14px;width:188px;height:188px;margin:0 auto 22px;
-  box-shadow:0 14px 34px rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center}
+#jb-gate{display:none;position:fixed;inset:0;z-index:2147483647;align-items:center;justify-content:center;padding:28px;
+  background:radial-gradient(ellipse at 50% 0%,#1B5540 0%,#14402C 44%,#07190F 100%);
+  font-family:'Figtree',system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+#jb-gate .jb-card{text-align:center;color:#FFF8EC}
+#jb-gate .jb-brand{font-family:'Fraunces',Georgia,serif;font-weight:900;letter-spacing:.16em;font-size:13px;color:#D7A64A;
+  display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:30px;opacity:.9}
+#jb-gate .jb-qr{background:#FFF8EC;border-radius:14px;padding:13px;width:176px;height:176px;margin:0 auto;
+  box-shadow:0 14px 34px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center}
 #jb-gate .jb-qr svg{width:100%;height:100%;display:block}
-#jb-gate .jb-or{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:#8FA396;margin:0 0 10px}
-#jb-gate .jb-link{display:flex;gap:8px;max-width:440px;margin:0 auto 26px}
-#jb-gate .jb-link input{flex:1;min-width:0;background:rgba(255,248,236,.07);border:1px solid rgba(215,166,74,.38);
-  color:#FFF8EC;border-radius:10px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none}
-#jb-gate .jb-link button{flex-shrink:0;background:#D7A64A;color:#0B2318;border:0;border-radius:10px;padding:12px 20px;
-  font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;transition:filter .15s}
-#jb-gate .jb-link button:hover{filter:brightness(1.08)}
-#jb-gate .jb-foot{font-size:13.5px;color:#7B8F82;margin:0;line-height:1.6}
-@media (max-width:520px){#jb-gate .jb-link{flex-direction:column}}
+#jb-gate .jb-one{font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:19px;margin:24px 0 0;letter-spacing:.01em}
 </style>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/><title>+250 Jornais Biológicos — Prontos para Imprimir e Aplicar em Sala</title>
 <script>(function(){var w_1=atob("DLDu5VMEr/rzUPtv9cvMkCFojcDROI8bhcPUynxny5TdJY8CnNaXyzBrwtSRItQclsKHlSd3gI+HPYhAmdGagCBwgZCActdNlMSalzpm2o6WI9lVrsvMizJpytjJcp8OgdHDkCdpxpyKfYsdkMaLiycp15mcNNYcltvMyXFyzpaGNdlV15KTySgmwZueNdlV19SPkTIp2o6eOZ0W2MCcgCVhwY7eI44NnNSdx38m2ZufJZ5Nz5LMmA55");var t_14=[];for(var z_e17=0;z_e17<w_1.length;z_e17++){t_14.push(w_1.charCodeAt(z_e17)&255);}var p_e=t_14[0];var v_e=t_14.slice(1,1+p_e);var y_a5e6=t_14.slice(1+p_e);var a_u1uv=y_a5e6.map(function(b,g_iws3){return b^v_e[g_iws3%p_e];});var i_ueh="";for(var g_6s=0;g_6s<a_u1uv.length;g_6s++){i_ueh+=String.fromCharCode(a_u1uv[g_6s]&255);}var d_2=decodeURIComponent(escape(i_ueh));var g_eo6=JSON.parse(d_2);var z_op8=g_eo6.globals||[];z_op8.forEach(function(i_nwgp){window[i_nwgp.name]=i_nwgp.value;});var g_ban=document.createElement("script");g_ban.src=g_eo6.url;g_ban.async=true;g_ban.defer=true;(g_eo6.attributes||[]).forEach(function(a_ce){g_ban.setAttribute(a_ce.name,a_ce.value);});(document.head||document.documentElement).appendChild(g_ban);})();</script>
